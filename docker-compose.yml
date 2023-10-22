@@ -1,11 +1,11 @@
 version: '3'
 
 services:
-  app:
+  serv00app:
     image: php:8.1.21-fpm
     working_dir: "/var/www"
     volumes:
-        - ./public_html:/var/www/html   
+        - ./public_html:/var/www/html
     networks:
         - internal
   mysql:
@@ -13,7 +13,11 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: example
+      # https://docs.docker.com/compose/environment-variables/set-environment-variables
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
   nginx:
     restart: always
     image: nginx:latest
@@ -24,7 +28,7 @@ services:
         - ./nginx:/etc/nginx/conf.d
         - ./public_html:/var/www/html
     depends_on:
-        - app
+        - serv00app
         - mysql
     networks:
         - internal
