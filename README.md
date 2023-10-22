@@ -1,6 +1,6 @@
 # serv00-app
 
-To emulate a <serv00.com> envirement.
+To emulate a <www.serv00.com> envirement.
 
 ## Steps
 
