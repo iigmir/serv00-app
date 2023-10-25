@@ -22,6 +22,7 @@ class BlogMetadata
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $this->data = curl_exec($ch);
         curl_close($ch);
+        $this->request_date();
     }
     private function api_data()
     {
@@ -48,6 +49,9 @@ class BlogMetadata
     }
     private function request_date()
     {
+        /**
+         * Only request if we don't have date
+         */
         if( $this->date_missed() )
         {
             $api_id = str_pad($this->id, 3, "0", STR_PAD_LEFT);
@@ -80,11 +84,13 @@ class BlogMetadata
         $data = $input;
         if( isset($data["created_at"]) == false )
         {
-            $data["created_at"] = $this->date_data[0]["commit"]["committer"]["date"];
+            $index = 0;
+            $data["created_at"] = $this->date_data[$index]["commit"]["committer"]["date"];
         }
         if( isset($data["updated_at"]) == false )
         {
-            $data["updated_at"] = $this->date_data[count($this->date_data) - 1];]["commit"]["committer"]["date"];
+            $index = count($this->date_data) - 1;
+            $data["updated_at"] = $this->date_data[$index]["commit"]["committer"]["date"];
         }
         return $data;
     }
