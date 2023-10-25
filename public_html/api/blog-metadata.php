@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * TODO: [Rate limiting](https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#rate-limiting)
+ */
 class BlogMetadata
 {
     protected $id = "";
@@ -34,7 +37,7 @@ class BlogMetadata
     private function api_data()
     {
         $response = json_decode($this->data);
-        if( isset($response) )
+        if( isset($response) && isset($response->content) )
         {
             return base64_decode($response->content);
         }
@@ -87,9 +90,6 @@ class BlogMetadata
         });
         return $data;
     }
-    /**
-     * @todo Request "created_at" and "updated_at" by commit date if it doesn't exist.
-     */
     private function get_date($input)
     {
         $data = $input;
