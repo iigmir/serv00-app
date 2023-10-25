@@ -27,9 +27,18 @@ class BlogMetadata
         $response = json_decode($this->data);
         if( isset($response) )
         {
-            return $response->content;
+            return base64_decode($response->content);
         }
         return null;
+    }
+    public function result()
+    {
+        $data = json_decode($this->api_data(), true);
+        $result = array_filter( $data, function($item)
+        {
+            return $item["id"] == $this->id;
+        });
+        return reset( $result );
     }
 }
 
@@ -70,7 +79,7 @@ class BlogData extends BlogMetadata
         return array(
             "message" => $this->message(),
             "id" => $this->metadata->id,
-            "data" => $this->metadata->api_data(),
+            "data" => $this->metadata->result(),
         );
     }
 }
