@@ -2,9 +2,9 @@
 
 class BlogMetadata
 {
-    protected $id;
-    protected $data = null;
-    protected $date_data = null;
+    protected $id = "";
+    protected $data = "";
+    protected $date_data = "";
     /**
      * @see <https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#user-agent-required>
      */
@@ -31,16 +31,20 @@ class BlogMetadata
         {
             return base64_decode($response->content);
         }
-        return null;
+        return "";
     }
     private function item_data()
     {
         $data = json_decode($this->api_data(), true);
-        $result = array_filter( $data, function($item)
+        if( $data )
         {
-            return $item["id"] == $this->id;
-        });
-        return reset( $result );
+            $result = array_filter( $data, function($item)
+            {
+                return $item["id"] == $this->id;
+            });
+            return reset( $result );
+        }
+        return array();
     }
     private function date_missed()
     {
@@ -82,6 +86,10 @@ class BlogMetadata
     private function get_date($input)
     {
         $data = $input;
+        if( isset($this->date_data[0]) == false )
+        {   // We can't help
+            return $data;
+        }
         if( isset($data["created_at"]) == false )
         {
             $index = 0;
@@ -107,7 +115,10 @@ class BlogData extends BlogMetadata
     {
         $id = isset($_GET["id"]) ? $_GET["id"] : null;
         $this->metadata = new BlogMetadata($id);
-        $this->metadata->fetch_api();
+        if( $id )
+        {
+            $this->metadata->fetch_api();
+        }
     }
     private function message(): string
     {
