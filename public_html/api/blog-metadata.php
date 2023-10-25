@@ -2,18 +2,29 @@
 
 class BlogMetadata
 {
+    protected $id;
+    private $apiurl = "https://api.github.com/repos/iigmir/blog-source/contents/info-files/articles.json";
+    public function __construct($id = null)
+    {
+        $this->id = $id;
+    }
+}
+
+class BlogData extends BlogMetadata
+{
     public function __construct()
     {
         $id = isset($_GET["id"]) ? $_GET["id"] : null;
-        $this->id = $id;
+        // $this->id = $id;
+        $this->metadata = new BlogMetadata($id);
     }
     private function message(): string
     {
-        if( $this->id == null )
+        if( $this->metadata->id == null )
         {
             return "Please provide API ID";
         }
-        if( $this->id == "404" )
+        if( $this->metadata->id == "404" )
         {
             return "File not found";
         }
@@ -21,11 +32,11 @@ class BlogMetadata
     }
     public function http_code(): int
     {
-        if( $this->id == null )
+        if( $this->metadata->id == null )
         {
             return 400;
         }
-        if( $this->id == "404" )
+        if( $this->metadata->id == "404" )
         {
             return 404;
         }
@@ -35,12 +46,12 @@ class BlogMetadata
     {
         return array(
             "message" => $this->message(),
-            "id" => $this->id,
+            "id" => $this->metadata->id,
         );
     }
 }
 
-$api = new BlogMetadata();
+$api = new BlogData();
 
 http_response_code( $api->http_code() );
 header( "Content-Type: application/json" );
