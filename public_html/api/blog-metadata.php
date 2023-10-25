@@ -4,7 +4,7 @@ class BlogMetadata
 {
     protected $id;
     protected $data = null;
-    private $apiurl = "https://api.github.com/repos/iigmir/blog-source/contents/info-files/articles.json";
+    protected $date_data = null;
     /**
      * @see <https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#user-agent-required>
      */
@@ -15,8 +15,9 @@ class BlogMetadata
     }
     public function fetch_api()
     {
+        $apiurl = "https://api.github.com/repos/iigmir/blog-source/contents/info-files/articles.json";
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->apiurl);
+        curl_setopt($ch, CURLOPT_URL, $apiurl);
         curl_setopt($ch, CURLOPT_USERAGENT, $this->useragent);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $this->data = curl_exec($ch);
@@ -33,13 +34,43 @@ class BlogMetadata
     }
     private function item_data()
     {
-        // function get_exactly_same_id($item) {  }
         $data = json_decode($this->api_data(), true);
         $result = array_filter( $data, function($item)
         {
             return $item["id"] == $this->id;
         });
         return reset( $result );
+    }
+    private function date_missed()
+    {
+        $data = $this->item_data()["created_at"];
+        return isset($data) == false || isset($data) == false;
+    }
+    private function request_date()
+    {
+        if( $this->date_missed() )
+        {
+            $api_id = str_pad($this->id, 3, "0", STR_PAD_LEFT);
+            $apiurl = "https://api.github.com/repos/iigmir/blog-source/commits?path=/articles/" .$api_id. ".md";
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $apiurl);
+            curl_setopt($ch, CURLOPT_USERAGENT, $this->useragent);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $this->date_data = curl_exec($ch);
+            curl_close($ch);
+            $this->date_data = $this->set_date_data($this->date_data);
+        }
+    }
+    private function set_date_data($input)
+    {
+        $data = json_decode($input, true);
+        usort($data, function ($a, $b)
+        {
+            $dateA = new DateTime($a["commit"]["committer"]["date"]);
+            $dateB = new DateTime($b["commit"]["committer"]["date"]);
+            return $dateA <=> $dateB;
+        });
+        return $data;
     }
     /**
      * @todo Request "created_at" and "updated_at" by commit date if it doesn't exist.
@@ -49,13 +80,11 @@ class BlogMetadata
         $data = $input;
         if( isset($data["created_at"]) == false )
         {
-            // 2000-01-01T00:00:00Z
-            $data["created_at"] = "unknown";
+            $data["created_at"] = $this->date_data[0]["commit"]["committer"]["date"];
         }
         if( isset($data["updated_at"]) == false )
         {
-            // 2000-01-01T00:00:00Z
-            $data["updated_at"] = "unknown";
+            $data["updated_at"] = $this->date_data[count($this->date_data) - 1];]["commit"]["committer"]["date"];
         }
         return $data;
     }
