@@ -19,13 +19,6 @@ class BlogMetadata
         }
         return "Success";
     }
-    private function data(): array
-    {
-        return array(
-            "message" => $this->message(),
-            "id" => $this->id,
-        );
-    }
     public function http_code(): int
     {
         if( $this->id == null )
@@ -40,12 +33,15 @@ class BlogMetadata
     }
     public function result(): array
     {
-        return $this->data();
+        return array(
+            "message" => $this->message(),
+            "id" => $this->id,
+        );
     }
 }
 
 $api = new BlogMetadata();
 
 http_response_code( $api->http_code() );
-header("Content-Type: application/json");
+header( "Content-Type: application/json" );
 echo( json_encode($api->result()) );
