@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>/api/blog-metadata.php test</title>
+    <style>
+        th, td { border: 1px solid #333; padding: 0.5rem; }
+    </style>
+</head>
+<body>
+    <main id="app">
+        <h1><code>/api/blog-metadata.php</code> test</h1>
+        <table>
+            <tr>
+                <th class="name">Test</th>
+                <th class="response">Response</th>
+                <th class="httpcode">HTTP code</th>
+            </tr>
+            <tr data-app="">
+                <td class="name">No ID param</td>
+                <td class="response"></td>
+                <td class="httpcode"></td>
+            </tr>
+            <tr data-app="100">
+                <td class="name">ID: 100</td>
+                <td class="response"></td>
+                <td class="httpcode"></td>
+            </tr>
+            <tr data-app="404">
+                <td class="name">ID: 404</td>
+                <td class="response"></td>
+                <td class="httpcode"></td>
+            </tr>
+            <tr data-app="4122846648">
+                <td class="name">ID: 4122846648</td>
+                <td class="response"></td>
+                <td class="httpcode"></td>
+            </tr>
+            <tr data-app="fooBarrsra">
+                <td class="name">ID: fooBarrsra</td>
+                <td class="response"></td>
+                <td class="httpcode"></td>
+            </tr>
+        </table>
+    </main>
+    <script>
+    const render_table = (id = "", datas = {}) =>
+    {
+        const tr = [...document.querySelectorAll("table tr")].filter( (its) => its.dataset.app === id );
+        if( tr[0] )
+        {
+            const td1 = tr[0].querySelector("td.response");
+            td1.textContent = JSON.stringify(datas);
+        }
+    };
+    const request_empty_id = () =>
+    {
+        const req = fetch("http://localhost:8080/api/blog-metadata.php").then( j => j.json() );
+        req.then( res => {
+            render_table("", res);
+        }).catch( err => {
+            render_table("", err);
+        });
+    };
+    request_empty_id();
+    const request_ids = ["100", "404", "4122846648", "fooBarrsra"];
+    request_ids.forEach( id =>
+    {
+        const req = fetch("http://localhost:8080/api/blog-metadata.php?id=" + id).then( j => j.json() );
+        req.then( res => {
+            render_table(id, res);
+        }).catch( err => {
+            render_table(id, err);
+        });
+    });
+    </script>
+</body>
+</html>
