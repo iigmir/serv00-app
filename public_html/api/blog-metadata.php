@@ -47,7 +47,7 @@ class BlogMetadata
         return array();
     }
     private function date_missed()
-    {
+    {   // https://stackoverflow.com/a/59687793/7162445
         $data = $this->item_data()["created_at"] ?? null;
         return isset($data) == false || isset($data) == false;
     }
