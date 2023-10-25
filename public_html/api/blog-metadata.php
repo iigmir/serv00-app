@@ -22,8 +22,7 @@ class BlogMetadata
         $this->data = curl_exec($ch);
         curl_close($ch);
     }
-    // refilled_dates()
-    public function api_data()
+    private function api_data()
     {
         $response = json_decode($this->data);
         if( isset($response) )
