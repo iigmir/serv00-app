@@ -9,7 +9,7 @@ class BlogMetadata
      * @see <https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#user-agent-required>
      */
     private $useragent = "Mozilla/5.0 iigmir-serv00-app/1.0.0";
-    public function __construct($id = null)
+    public function __construct($id = "")
     {
         $this->id = $id;
     }
@@ -120,7 +120,7 @@ class BlogData extends BlogMetadata
 {
     public function __construct()
     {
-        $id = isset($_GET["id"]) ? $_GET["id"] : null;
+        $id = isset($_GET["id"]) ? $_GET["id"] : "";
         $this->metadata = new BlogMetadata($id);
         $this->metadata->main();
     }
