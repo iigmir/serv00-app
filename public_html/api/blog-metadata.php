@@ -13,6 +13,14 @@ class BlogMetadata
     {
         $this->id = $id;
     }
+    public function main()
+    {
+        if( $this->id )
+        {
+            $this->fetch_api();
+            $this->request_date();
+        }
+    }
     public function fetch_api()
     {
         $apiurl = "https://api.github.com/repos/iigmir/blog-source/contents/info-files/articles.json";
@@ -22,7 +30,6 @@ class BlogMetadata
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $this->data = curl_exec($ch);
         curl_close($ch);
-        $this->request_date();
     }
     private function api_data()
     {
@@ -115,10 +122,7 @@ class BlogData extends BlogMetadata
     {
         $id = isset($_GET["id"]) ? $_GET["id"] : null;
         $this->metadata = new BlogMetadata($id);
-        if( $id )
-        {
-            $this->metadata->fetch_api();
-        }
+        $this->metadata->main();
     }
     private function message(): string
     {
