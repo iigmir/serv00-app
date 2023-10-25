@@ -48,7 +48,7 @@ class BlogMetadata
     }
     private function date_missed()
     {
-        $data = $this->item_data()["created_at"];
+        $data = $this->item_data()["created_at"] ?? null;
         return isset($data) == false || isset($data) == false;
     }
     private function request_date()
