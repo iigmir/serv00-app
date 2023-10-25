@@ -22,6 +22,7 @@ class BlogMetadata
         $this->data = curl_exec($ch);
         curl_close($ch);
     }
+    // refilled_dates()
     public function api_data()
     {
         $response = json_decode($this->data);
@@ -31,14 +32,38 @@ class BlogMetadata
         }
         return null;
     }
-    public function result()
+    private function item_data()
     {
+        // function get_exactly_same_id($item) {  }
         $data = json_decode($this->api_data(), true);
         $result = array_filter( $data, function($item)
         {
             return $item["id"] == $this->id;
         });
         return reset( $result );
+    }
+    /**
+     * @todo Request "created_at" and "updated_at" by commit date if it doesn't exist.
+     */
+    private function get_date($input)
+    {
+        $data = $input;
+        if( isset($data["created_at"]) == false )
+        {
+            // 2000-01-01T00:00:00Z
+            $data["created_at"] = "unknown";
+        }
+        if( isset($data["updated_at"]) == false )
+        {
+            // 2000-01-01T00:00:00Z
+            $data["updated_at"] = "unknown";
+        }
+        return $data;
+    }
+    public function result()
+    {
+        $data = $this->get_date($this->item_data());
+        return $data;
     }
 }
 
