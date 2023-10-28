@@ -5,7 +5,7 @@
  */
 class BlogMetadata
 {
-    protected $id = "";
+    public $id = "";
     protected $data = "";
     protected $date_data = "";
     /**
@@ -116,7 +116,7 @@ class BlogMetadata
     }
 }
 
-class BlogData extends BlogMetadata
+class BlogData
 {
     public function __construct()
     {
