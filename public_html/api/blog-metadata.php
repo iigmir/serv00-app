@@ -124,17 +124,17 @@ class BlogData extends BlogMetadata
         $this->metadata = new BlogMetadata($id);
         $this->metadata->main();
     }
+    private function file_not_found(): bool
+    {
+        return $this->metadata->id == "404" || $this->metadata->result() == false;
+    }
     private function message(): string
     {
         if( $this->metadata->id == null )
         {
             return "Please provide API ID";
         }
-        if( $this->metadata->id == "404" )
-        {
-            return "File not found";
-        }
-        if( $this->metadata->result() == false )
+        if( $this->file_not_found() )
         {
             return "File not found";
         }
@@ -146,11 +146,7 @@ class BlogData extends BlogMetadata
         {
             return 400;
         }
-        if( $this->metadata->id == "404" )
-        {
-            return 404;
-        }
-        if( $this->metadata->result() == false )
+        if( $this->file_not_found() )
         {
             return 404;
         }
