@@ -1,5 +1,15 @@
 <?php
 
+function get_my_articles()
+{
+    return "https://api.github.com/repos/iigmir/blog-source/contents/info-files/articles.json";
+}
+
+function get_my_article_by_id($id = "404")
+{
+    return "https://api.github.com/repos/iigmir/blog-source/commits?path=/articles/" .$id. ".md";
+}
+
 /**
  * TODO: [Rate limiting](https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#rate-limiting)
  */
@@ -30,7 +40,7 @@ class BlogMetadata
     }
     private function fetch_api()
     {
-        $apiurl = "https://api.github.com/repos/iigmir/blog-source/contents/info-files/articles.json";
+        $apiurl = get_my_articles();
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $apiurl);
         curl_setopt($ch, CURLOPT_USERAGENT, $this->useragent);
@@ -63,7 +73,7 @@ class BlogMetadata
     private function date_missed()
     {   // https://stackoverflow.com/a/59687793/7162445
         $data = $this->item_data()["created_at"] ?? null;
-        return isset($data) == false || isset($data) == false;
+        return isset($data) == false;
     }
     private function request_date()
     {
@@ -73,7 +83,7 @@ class BlogMetadata
         if( $this->date_missed() )
         {
             $api_id = str_pad($this->id, 3, "0", STR_PAD_LEFT);
-            $apiurl = "https://api.github.com/repos/iigmir/blog-source/commits?path=/articles/" .$api_id. ".md";
+            $apiurl = get_my_article_by_id($api_id);
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $apiurl);
             curl_setopt($ch, CURLOPT_USERAGENT, $this->useragent);
