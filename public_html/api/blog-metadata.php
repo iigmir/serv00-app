@@ -124,13 +124,17 @@ class BlogData extends BlogMetadata
         $this->metadata = new BlogMetadata($id);
         $this->metadata->main();
     }
+    private function no_id_given(): bool
+    {
+        return $this->metadata->id == null;
+    }
     private function file_not_found(): bool
     {
         return $this->metadata->id == "404" || $this->metadata->result() == false;
     }
     private function message(): string
     {
-        if( $this->metadata->id == null )
+        if( $this->no_id_given() )
         {
             return "Please provide API ID";
         }
@@ -142,7 +146,7 @@ class BlogData extends BlogMetadata
     }
     public function http_code(): int
     {
-        if( $this->metadata->id == null )
+        if( $this->no_id_given() )
         {
             return 400;
         }
