@@ -134,6 +134,10 @@ class BlogData extends BlogMetadata
         {
             return "File not found";
         }
+        if( $this->metadata->result() == false )
+        {
+            return "File not found";
+        }
         return "Success";
     }
     public function http_code(): int
@@ -143,6 +147,10 @@ class BlogData extends BlogMetadata
             return 400;
         }
         if( $this->metadata->id == "404" )
+        {
+            return 404;
+        }
+        if( $this->metadata->result() == false )
         {
             return 404;
         }
