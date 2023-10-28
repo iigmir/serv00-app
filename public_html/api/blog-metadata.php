@@ -16,9 +16,13 @@ class BlogMetadata
     {
         $this->id = $id;
     }
+    private function no_id_given(): bool
+    {
+        return $this->id == "" || $this->id == null || $this->id == "404";
+    }
     public function main()
     {
-        if( $this->id )
+        if( $this->id && $this->no_id_given() == false )
         {
             $this->fetch_api();
             $this->request_date();
