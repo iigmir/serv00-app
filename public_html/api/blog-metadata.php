@@ -28,7 +28,7 @@ class BlogMetadata
             $this->request_date();
         }
     }
-    public function fetch_api()
+    private function fetch_api()
     {
         $apiurl = "https://api.github.com/repos/iigmir/blog-source/contents/info-files/articles.json";
         $ch = curl_init();
