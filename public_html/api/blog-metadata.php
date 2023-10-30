@@ -60,7 +60,7 @@ class BlogMetadata
     private function item_data()
     {
         $data = json_decode($this->api_data(), true);
-        if (str_contains( $data["message"], "API rate limit exceeded"))
+        if ( isset($data["message"]) && str_contains( $data["message"], "API rate limit exceeded"))
         {
             return;
         }
@@ -100,7 +100,7 @@ class BlogMetadata
     private function set_date_data($input)
     {
         $data = json_decode($input, true);
-        if (str_contains( $data["message"], "API rate limit exceeded"))
+        if ( isset($data["message"]) && str_contains( $data["message"], "API rate limit exceeded"))
         {
             return;
         }
@@ -156,7 +156,8 @@ class BlogData
     }
     private function api_limit_exceeded(): bool
     {
-        return str_contains( $this->metadata->result()["message"], "API rate limit exceeded");
+        $data = $this->metadata->result();
+        return isset($data["message"]) && str_contains( $data["message"], "API rate limit exceeded");
     }
     private function message(): string
     {
