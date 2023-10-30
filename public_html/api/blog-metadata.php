@@ -60,6 +60,10 @@ class BlogMetadata
     private function item_data()
     {
         $data = json_decode($this->api_data(), true);
+        if (str_contains( $data["message"], "API rate limit exceeded"))
+        {
+            return;
+        }
         if( $data )
         {
             $result = array_filter( $data, function($item)
@@ -96,6 +100,10 @@ class BlogMetadata
     private function set_date_data($input)
     {
         $data = json_decode($input, true);
+        if (str_contains( $data["message"], "API rate limit exceeded"))
+        {
+            return;
+        }
         usort($data, function ($a, $b)
         {
             $dateA = new DateTime($a["commit"]["committer"]["date"]);
@@ -146,6 +154,10 @@ class BlogData
     {
         return $this->metadata->id == "404" || $this->metadata->result() == false;
     }
+    private function api_limit_exceeded(): bool
+    {
+        return str_contains( $this->metadata->result()["message"], "API rate limit exceeded");
+    }
     private function message(): string
     {
         if( $this->no_id_given() )
@@ -167,6 +179,10 @@ class BlogData
         if( $this->file_not_found() )
         {
             return 404;
+        }
+        if( $this->api_limit_exceeded() )
+        {
+            return 503;
         }
         return 200;
     }
