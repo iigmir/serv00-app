@@ -197,16 +197,17 @@ class BlogData
     }
 }
 
+$accepted_domain = "https://iigmir.github.io";
 if( isset($_GET["id"]) ) {
     $api = new BlogData();
     http_response_code( $api->http_code() );
     header( "Content-Type: application/json" );
-    header( "Access-Control-Allow-Origin: *" );
+    header( "Access-Control-Allow-Origin: $accepted_domain" );
     echo( json_encode($api->result()) );
 } else {
     http_response_code( 400 );
     header( "Content-Type: application/json" );
-    header( "Access-Control-Allow-Origin: *" );
+    header( "Access-Control-Allow-Origin: $accepted_domain" );
     echo( json_encode( array(
         "message" => "Please provide API ID",
         "id" => "",
