@@ -1,0 +1,4 @@
+RewriteEngine On
+
+# Rewrite the friendly URL to the original query string format
+RewriteRule ^echo/(.*)$ /api/echo.php?param=$1 [QSA,NC,L]
