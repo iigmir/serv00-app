@@ -2,3 +2,4 @@ RewriteEngine On
 
 # Rewrite the friendly URL to the original query string format
 RewriteRule ^echo/(.*)$ /api/echo.php?param=$1 [QSA,NC,L]
+RewriteRule ^blog-metadata/(.*)$ /api/blog-metadata.php?id=$1 [QSA,NC,L]
