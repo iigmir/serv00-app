@@ -198,6 +198,15 @@ class BlogData
 }
 
 $accepted_domain = "https://iigmir.github.io";
+http_response_code( 503 );
+header( "Content-Type: application/json" );
+header( "Access-Control-Allow-Origin: $accepted_domain" );
+echo( json_encode( array(
+    "message" => "API service is closed for maintaince.",
+    "id" => null,
+    "data" => array(),
+) ) );
+/*
 if( isset($_GET["id"]) ) {
     $api = new BlogData();
     http_response_code( $api->http_code() );
@@ -214,3 +223,4 @@ if( isset($_GET["id"]) ) {
         "data" => array(),
     ) ) );
 }
+*/
